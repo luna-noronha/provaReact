@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import { Linking } from 'react-native';
@@ -34,11 +34,31 @@ export default function Lista() {
 
   const fetchContatos = async () => {
     try {
-      const rows: Contato[] = await db.getAllAsync('SELECT * FROM contatos order by nome');
+      const rows: Contato[] = await db.getAllAsync('SELECT * FROM contatos ORDER BY nome');
       setContatos(rows);
     } catch (error) {
       console.error('Erro ao buscar contatos', error);
     }
+  };
+
+  const deletarContato = async (id: number) => {
+    try {
+      await db.runAsync('DELETE FROM contatos WHERE id = ?', [id]);
+      fetchContatos(); // Atualiza a lista
+    } catch (error) {
+      console.error('Erro ao deletar contato', error);
+    }
+  };
+
+  const confirmarExclusao = (id: number) => {
+    Alert.alert(
+      'Excluir Contato',
+      'Tem certeza que deseja excluir este contato?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Excluir', style: 'destructive', onPress: () => deletarContato(id) },
+      ]
+    );
   };
 
   return (
@@ -56,6 +76,11 @@ export default function Lista() {
             style={styles.botao}
             onPress={() => Linking.openURL(`tel:${item.numero}`)}>
             <Text style={styles.botaoTexto}>📞</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.botaoExcluir}
+            onPress={() => confirmarExclusao(item.id)}>
+            <Text style={styles.botaoTexto}>🗑️</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -102,6 +127,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 12,
+  },
+  botaoExcluir: {
+    backgroundColor: '#f44336',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
   },
   botaoTexto: {
     color: '#fff',
