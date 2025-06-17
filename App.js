@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Lista from './Screens/lista';
 import FormInserirContato from './Screens/formInserirContato';
+import FormAtualizarContato from './Screens/formAtualizarContato';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="list" component={List} />
         <Stack.Screen name="FormInserirContato" component={FormInserirContato} />
+        <Stack.Screen name="FormAtualizarContato" component={FormAtualizarContato} />
       </Stack.Navigator>
     </NavigationContainer>
   );
