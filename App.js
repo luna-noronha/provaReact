@@ -15,7 +15,7 @@ function List({ navigation }) {
         <Text style={styles.headerText}>Lista Telefônica</Text>
       </View>
       <View style={styles.box}>
-        <Lista />
+        <Lista navigation={navigation}/>
       </View>
       <TouchableOpacity
         style={styles.botaoInserir}
