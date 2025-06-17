@@ -1,5 +1,5 @@
-import { React, useState } from 'react';
-import { FlatList, View, Text, TouchableOpacity, StyleSheet, Alert, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import { Linking } from 'react-native';
@@ -12,7 +12,7 @@ type Contato = {
   numero: string;
 };
 
-export default function Lista() {
+export default function Lista({ navigation }) {
   const [contatos, setContatos] = useState<Contato[]>([]);
 
   useFocusEffect(
@@ -61,34 +61,6 @@ export default function Lista() {
     );
   };
 
-  const editarContato = (contato: Contato) => {
-    Alert.prompt(
-      'Editar Nome',
-      `Altere o nome de ${contato.nome}`,
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Salvar',
-          onPress: async (novoNome) => {
-            if (novoNome?.trim()) {
-              try {
-                await db.runAsync('UPDATE contatos SET nome = ? WHERE id = ?', [novoNome.trim(), contato.id]);
-                fetchContatos();
-              } catch (error) {
-                console.error('Erro ao editar contato', error);
-              }
-            }
-          },
-        },
-      ],
-      'plain-text',
-      contato.nome
-    );
-  };
-
   return (
     <FlatList
       contentContainerStyle={styles.lista}
@@ -107,9 +79,15 @@ export default function Lista() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.botaoEditar}
-            onPress={() => editarContato(item)}>
+            onPress={() => navigation.navigate('FormAtualizarContato', {
+              id: item.id,
+              nome: item.nome,
+              numero: item.numero
+            })}
+          >
             <Text style={styles.botaoTexto}>✏️</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.botaoExcluir}
             onPress={() => confirmarExclusao(item.id)}>
