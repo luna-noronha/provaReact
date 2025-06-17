@@ -87,7 +87,6 @@ export default function Lista({ navigation }) {
           >
             <Text style={styles.botaoTexto}>✏️</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.botaoExcluir}
             onPress={() => confirmarExclusao(item.id)}>
